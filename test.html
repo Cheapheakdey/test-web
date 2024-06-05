@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Camera Detector</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Available Cameras</h1>
+    <div id="cameraList"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            function listCameras() {
+                if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
+                    navigator.mediaDevices.enumerateDevices({video: true}).then(function(devices) {
+                        var cameras = devices.filter(device => device.kind === 'videoinput');
+                        var cameraListDiv = document.getElementById('cameraList');
+
+                        if (cameras.length > 0) {
+                            cameraListDiv.innerHTML = '<p>Found ' + cameras.length + ' camera(s):</p>';
+                            cameras.forEach(camera => {
+                                var p = document.createElement('p');
+                                p.textContent = 'ID: ' + camera.deviceId + ', Label: ' + camera.label;
+                                cameraListDiv.appendChild(p);
+                            });
+                        } else {
+                            cameraListDiv.innerHTML = '<p>No cameras found.</p>';
+                        }
+                    }).catch(function(err) {
+                        console.error('Error listing cameras:', err);
+                    });
+                } else {
+                    console.log('Your browser does not support media devices.');
+                }
+            }
+
+            listCameras();
+        });
+    </script>
+</body>
+</html>
